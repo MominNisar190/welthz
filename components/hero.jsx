@@ -42,7 +42,7 @@ const HeroSection = () => {
               Get Started
             </Button>
           </Link>
-          <Link href="https://github.com/MominNisar190/welth">
+          <Link href="https://github.com/MominNisar190/welthz">
             <Button size="lg" variant="outline" className="px-8">
               Source Code
             </Button>
