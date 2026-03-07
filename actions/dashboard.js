@@ -36,7 +36,7 @@ export async function getUserAccounts() {
       include: {
         _count: {
           select: {
-            transactions: false,
+            transactions: true,
           },
         },
       },
