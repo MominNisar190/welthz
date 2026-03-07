@@ -8,6 +8,7 @@ import { BudgetProgress } from "./_components/budget-progress";
 import { Card, CardContent } from "@/components/ui/card";
 import { Plus } from "lucide-react";
 import { DashboardOverview } from "./_components/transaction-overview";
+import { ManualReportSender } from "./_components/manual-report-sender";
 
 export default async function DashboardPage() {
   const [accounts, transactions] = await Promise.all([
@@ -51,6 +52,11 @@ export default async function DashboardPage() {
           accounts?.map((account) => (
             <AccountCard key={account.id} account={account} />
           ))}
+      </div>
+
+      {/* Manual Report Sender */}
+      <div className="max-w-md">
+        <ManualReportSender />
       </div>
     </div>
   );
