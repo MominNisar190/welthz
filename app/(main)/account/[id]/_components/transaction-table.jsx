@@ -287,13 +287,13 @@ export function TransactionTable({ transactions, accountName }) {
   };
 
   return (
-    <div className="space-y-3 sm:space-y-4">
+    <div className="space-y-4">
       {deleteLoading && (
         <BarLoader className="mt-4" width={"100%"} color="#9333ea" />
       )}
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-2">
-        <div className="relative flex-1 min-w-[180px] sm:min-w-[200px]">
+        <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search transactions..."
@@ -302,17 +302,16 @@ export function TransactionTable({ transactions, accountName }) {
               setSearchTerm(e.target.value);
               setCurrentPage(1);
             }}
-            className="pl-8 text-sm"
+            className="pl-8"
           />
         </div>
 
         {/* Download Report Button */}
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button variant="outline" className="gap-2 whitespace-nowrap text-sm h-10">
+            <Button variant="outline" className="gap-2 whitespace-nowrap">
               <Download className="h-4 w-4" />
-              <span className="hidden sm:inline">Download Report</span>
-              <span className="sm:hidden">Report</span>
+              Download Report
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
@@ -390,7 +389,7 @@ export function TransactionTable({ transactions, accountName }) {
             setCurrentPage(1);
           }}
         >
-          <SelectTrigger className="w-auto min-w-[100px] sm:min-w-[130px] text-sm h-10">
+          <SelectTrigger className="w-auto min-w-[130px]">
             <SelectValue placeholder="All Types" />
           </SelectTrigger>
           <SelectContent>
@@ -406,7 +405,7 @@ export function TransactionTable({ transactions, accountName }) {
             setCurrentPage(1);
           }}
         >
-          <SelectTrigger className="w-auto min-w-[100px] sm:min-w-[130px] text-sm h-10">
+          <SelectTrigger className="w-auto min-w-[130px]">
             <SelectValue placeholder="All Transactions" />
           </SelectTrigger>
           <SelectContent>
@@ -421,11 +420,10 @@ export function TransactionTable({ transactions, accountName }) {
             variant="destructive"
             size="sm"
             onClick={handleBulkDelete}
-            className="whitespace-nowrap text-sm h-10"
+            className="whitespace-nowrap"
           >
-            <Trash className="h-4 w-4 mr-1 sm:mr-2" />
-            <span className="hidden sm:inline">Delete Selected ({selectedIds.length})</span>
-            <span className="sm:hidden">Delete ({selectedIds.length})</span>
+            <Trash className="h-4 w-4 mr-2" />
+            Delete Selected ({selectedIds.length})
           </Button>
         )}
 
@@ -435,19 +433,18 @@ export function TransactionTable({ transactions, accountName }) {
             size="icon"
             onClick={handleClearFilters}
             title="Clear filters"
-            className="h-10 w-10"
           >
-            <X className="h-4 w-4" />
+            <X className="h-4 w-5" />
           </Button>
         )}
       </div>
 
       {/* Transactions Table */}
-      <div className="rounded-md border overflow-x-auto">
+      <div className="rounded-md border">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[40px] sm:w-[50px]">
+              <TableHead className="w-[50px]">
                 <Checkbox
                   checked={
                     selectedIds.length === paginatedTransactions.length &&
@@ -457,50 +454,50 @@ export function TransactionTable({ transactions, accountName }) {
                 />
               </TableHead>
               <TableHead
-                className="cursor-pointer min-w-[100px]"
+                className="cursor-pointer"
                 onClick={() => handleSort("date")}
               >
-                <div className="flex items-center text-xs sm:text-sm">
+                <div className="flex items-center">
                   Date
                   {sortConfig.field === "date" &&
                     (sortConfig.direction === "asc" ? (
-                      <ChevronUp className="ml-1 h-3 w-3 sm:h-4 sm:w-4" />
+                      <ChevronUp className="ml-1 h-4 w-4" />
                     ) : (
-                      <ChevronDown className="ml-1 h-3 w-3 sm:h-4 sm:w-4" />
+                      <ChevronDown className="ml-1 h-4 w-4" />
                     ))}
                 </div>
               </TableHead>
-              <TableHead className="min-w-[120px] text-xs sm:text-sm">Description</TableHead>
+              <TableHead>Description</TableHead>
               <TableHead
-                className="cursor-pointer min-w-[100px]"
+                className="cursor-pointer"
                 onClick={() => handleSort("category")}
               >
-                <div className="flex items-center text-xs sm:text-sm">
+                <div className="flex items-center">
                   Category
                   {sortConfig.field === "category" &&
                     (sortConfig.direction === "asc" ? (
-                      <ChevronUp className="ml-1 h-3 w-3 sm:h-4 sm:w-4" />
+                      <ChevronUp className="ml-1 h-4 w-4" />
                     ) : (
-                      <ChevronDown className="ml-1 h-3 w-3 sm:h-4 sm:w-4" />
+                      <ChevronDown className="ml-1 h-4 w-4" />
                     ))}
                 </div>
               </TableHead>
               <TableHead
-                className="cursor-pointer text-right min-w-[100px]"
+                className="cursor-pointer text-right"
                 onClick={() => handleSort("amount")}
               >
-                <div className="flex items-center justify-end text-xs sm:text-sm">
+                <div className="flex items-center justify-end">
                   Amount
                   {sortConfig.field === "amount" &&
                     (sortConfig.direction === "asc" ? (
-                      <ChevronUp className="ml-1 h-3 w-3 sm:h-4 sm:w-4" />
+                      <ChevronUp className="ml-1 h-4 w-4" />
                     ) : (
-                      <ChevronDown className="ml-1 h-3 w-3 sm:h-4 sm:w-4" />
+                      <ChevronDown className="ml-1 h-4 w-4" />
                     ))}
                 </div>
               </TableHead>
-              <TableHead className="min-w-[100px] text-xs sm:text-sm">Recurring</TableHead>
-              <TableHead className="w-[40px] sm:w-[50px]" />
+              <TableHead>Recurring</TableHead>
+              <TableHead className="w-[50px]" />
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -508,7 +505,7 @@ export function TransactionTable({ transactions, accountName }) {
               <TableRow>
                 <TableCell
                   colSpan={7}
-                  className="text-center text-muted-foreground text-sm"
+                  className="text-center text-muted-foreground"
                 >
                   No transactions found
                 </TableCell>
@@ -522,23 +519,23 @@ export function TransactionTable({ transactions, accountName }) {
                       onCheckedChange={() => handleSelect(transaction.id)}
                     />
                   </TableCell>
-                  <TableCell className="text-xs sm:text-sm">
+                  <TableCell>
                     {format(new Date(transaction.date), "PP")}
                   </TableCell>
-                  <TableCell className="text-xs sm:text-sm">{transaction.description}</TableCell>
+                  <TableCell>{transaction.description}</TableCell>
                   <TableCell className="capitalize">
                     <span
                       style={{
                         background: categoryColors[transaction.category],
                       }}
-                      className="px-2 py-1 rounded text-white text-xs"
+                      className="px-2 py-1 rounded text-white text-sm"
                     >
                       {transaction.category}
                     </span>
                   </TableCell>
                   <TableCell
                     className={cn(
-                      "text-right font-medium text-xs sm:text-sm",
+                      "text-right font-medium",
                       transaction.type === "EXPENSE"
                         ? "text-red-500"
                         : "text-green-500"
@@ -554,16 +551,14 @@ export function TransactionTable({ transactions, accountName }) {
                           <TooltipTrigger>
                             <Badge
                               variant="secondary"
-                              className="gap-1 bg-purple-100 text-purple-700 hover:bg-purple-200 text-xs"
+                              className="gap-1 bg-purple-100 text-purple-700 hover:bg-purple-200"
                             >
-                              <RefreshCw className="h-2 w-2 sm:h-3 sm:w-3" />
-                              <span className="hidden sm:inline">
-                                {
-                                  RECURRING_INTERVALS[
-                                    transaction.recurringInterval
-                                  ]
-                                }
-                              </span>
+                              <RefreshCw className="h-3 w-3" />
+                              {
+                                RECURRING_INTERVALS[
+                                  transaction.recurringInterval
+                                ]
+                              }
                             </Badge>
                           </TooltipTrigger>
                           <TooltipContent>
@@ -580,17 +575,17 @@ export function TransactionTable({ transactions, accountName }) {
                         </Tooltip>
                       </TooltipProvider>
                     ) : (
-                      <Badge variant="outline" className="gap-1 text-xs">
-                        <Clock className="h-2 w-2 sm:h-3 sm:w-3" />
-                        <span className="hidden sm:inline">One-time</span>
+                      <Badge variant="outline" className="gap-1">
+                        <Clock className="h-3 w-3" />
+                        One-time
                       </Badge>
                     )}
                   </TableCell>
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-7 w-7 sm:h-8 sm:w-8 p-0">
-                          <MoreHorizontal className="h-3 w-3 sm:h-4 sm:w-4" />
+                        <Button variant="ghost" className="h-8 w-8 p-0">
+                          <MoreHorizontal className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
@@ -625,22 +620,20 @@ export function TransactionTable({ transactions, accountName }) {
         <div className="flex items-center justify-center gap-2">
           <Button
             variant="outline"
-            size="sm"
+            size="icon"
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
-            className="h-9 w-9 p-0"
           >
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <span className="text-xs sm:text-sm px-2">
+          <span className="text-sm">
             Page {currentPage} of {totalPages}
           </span>
           <Button
             variant="outline"
-            size="sm"
+            size="icon"
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className="h-9 w-9 p-0"
           >
             <ChevronRight className="h-4 w-4" />
           </Button>

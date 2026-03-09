@@ -7,7 +7,6 @@ const nextConfig = {
         hostname: "randomuser.me",
       },
     ],
-    formats: ['image/avif', 'image/webp'],
   },
 
   experimental: {
@@ -15,13 +14,6 @@ const nextConfig = {
       bodySizeLimit: "5mb",
     },
   },
-
-  // Performance optimizations
-  compress: true,
-  poweredByHeader: false,
-  
-  // Enable SWC minification
-  swcMinify: true,
 };
 
 export default nextConfig;
