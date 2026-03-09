@@ -148,3 +148,67 @@ export async function updateDefaultAccount(accountId) {
     return { success: false, error: error.message };
   }
 }
+
+export async function deleteAccount(accountId) {
+  try {
+    const { userId } = await auth();
+    if (!userId) throw new Error("Unauthorized");
+
+    const user = await db.user.findUnique({
+      where: { clerkUserId: userId },
+    });
+
+    if (!user) throw new Error("User not found");
+
+    // Check if account exists and belongs to user
+    const account = await db.account.findUnique({
+      where: {
+        id: accountId,
+        userId: user.id,
+      },
+    });
+
+    if (!account) throw new Error("Account not found");
+
+    // Check if this is the only account
+    const accountCount = await db.account.count({
+      where: { userId: user.id },
+    });
+
+    if (accountCount <= 1) {
+      throw new Error("Cannot delete your only account");
+    }
+
+    // Delete account and all its transactions in a transaction
+    await db.$transaction(async (tx) => {
+      // Delete all transactions for this account
+      await tx.transaction.deleteMany({
+        where: { accountId },
+      });
+
+      // Delete the account
+      await tx.account.delete({
+        where: { id: accountId },
+      });
+
+      // If it was the default account, set another account as default
+      if (account.isDefault) {
+        const anotherAccount = await tx.account.findFirst({
+          where: { userId: user.id },
+        });
+
+        if (anotherAccount) {
+          await tx.account.update({
+            where: { id: anotherAccount.id },
+            data: { isDefault: true },
+          });
+        }
+      }
+    });
+
+    revalidatePath("/dashboard");
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
