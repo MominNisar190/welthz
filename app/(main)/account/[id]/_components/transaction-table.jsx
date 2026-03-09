@@ -12,6 +12,7 @@ import {
   ChevronRight,
   RefreshCw,
   Clock,
+  Download,
 } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
@@ -48,12 +49,25 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { cn } from "@/lib/utils";
 import { categoryColors } from "@/data/categories";
 import { bulkDeleteTransactions } from "@/actions/account";
 import useFetch from "@/hooks/use-fetch";
 import { BarLoader } from "react-spinners";
 import { useRouter } from "next/navigation";
+import { generateMonthlyReport } from "@/lib/excel-report";
+import { generateMonthlyPDFReport } from "@/lib/pdf-report";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -74,6 +88,10 @@ export function TransactionTable({ transactions }) {
   const [typeFilter, setTypeFilter] = useState("");
   const [recurringFilter, setRecurringFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedMonth, setSelectedMonth] = useState("");
+  const [reportFormat, setReportFormat] = useState("excel");
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const router = useRouter();
 
   // Memoized filtered and sorted transactions
@@ -197,6 +215,77 @@ export function TransactionTable({ transactions }) {
     setSelectedIds([]); // Clear selections on page change
   };
 
+  // Get available months from transactions
+  const availableMonths = useMemo(() => {
+    const months = new Set();
+    transactions.forEach((transaction) => {
+      const date = new Date(transaction.date);
+      const monthYear = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+      months.add(monthYear);
+    });
+    return Array.from(months).sort().reverse();
+  }, [transactions]);
+
+  const handleDownloadReport = async () => {
+    if (!selectedMonth) {
+      toast.error("Please select a month");
+      return;
+    }
+
+    setIsDownloading(true);
+
+    try {
+      const [year, month] = selectedMonth.split("-");
+      const monthNumber = parseInt(month);
+
+      // Filter transactions for selected month
+      const monthTransactions = transactions.filter((transaction) => {
+        const date = new Date(transaction.date);
+        return (
+          date.getFullYear() === parseInt(year) &&
+          date.getMonth() + 1 === monthNumber
+        );
+      });
+
+      if (monthTransactions.length === 0) {
+        toast.error("No transactions found for the selected month");
+        setIsDownloading(false);
+        return;
+      }
+
+      const monthNames = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ];
+
+      // Generate report based on selected format
+      if (reportFormat === "pdf") {
+        await generateMonthlyPDFReport(monthTransactions, monthNames[monthNumber - 1], year);
+      } else {
+        await generateMonthlyReport(monthTransactions, monthNames[monthNumber - 1], year);
+      }
+
+      toast.success(`${reportFormat.toUpperCase()} report downloaded successfully!`);
+      setSelectedMonth("");
+      setReportFormat("excel");
+      setIsDialogOpen(false);
+    } catch (error) {
+      toast.error(error.message || "Failed to generate report");
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
   return (
     <div className="space-y-4">
       {deleteLoading && (
@@ -204,7 +293,7 @@ export function TransactionTable({ transactions }) {
       )}
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-4">
-        <div className="relative flex-1">
+        <div className="relative max-w-xs">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search transactions..."
@@ -216,7 +305,84 @@ export function TransactionTable({ transactions }) {
             className="pl-8"
           />
         </div>
-        <div className="flex gap-2">
+
+        {/* Download Report Button */}
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogTrigger asChild>
+            <Button variant="outline" className="gap-2">
+              <Download className="h-4 w-4" />
+              Download Report
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Download Monthly Report</DialogTitle>
+              <DialogDescription>
+                Select the month and format for your financial report.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid gap-2">
+                <Label htmlFor="month">Month</Label>
+                <Select value={selectedMonth} onValueChange={setSelectedMonth}>
+                  <SelectTrigger id="month">
+                    <SelectValue placeholder="Choose month..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableMonths.map((monthYear) => {
+                      const [year, month] = monthYear.split("-");
+                      const date = new Date(year, parseInt(month) - 1);
+                      return (
+                        <SelectItem key={monthYear} value={monthYear}>
+                          {format(date, "MMMM yyyy")}
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid gap-2">
+                <Label>Format</Label>
+                <RadioGroup value={reportFormat} onValueChange={setReportFormat}>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="pdf" id="pdf" />
+                    <Label htmlFor="pdf" className="font-normal cursor-pointer">
+                      PDF
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="excel" id="excel" />
+                    <Label htmlFor="excel" className="font-normal cursor-pointer">
+                      Excel
+                    </Label>
+                  </div>
+                </RadioGroup>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setIsDialogOpen(false);
+                  setSelectedMonth("");
+                  setReportFormat("excel");
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleDownloadReport}
+                disabled={!selectedMonth || isDownloading}
+                className="gap-2"
+              >
+                <Download className="h-4 w-4" />
+                {isDownloading ? "Generating..." : "Download Report"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        <div className="flex gap-2 flex-1 justify-end">
           <Select
             value={typeFilter}
             onValueChange={(value) => {
