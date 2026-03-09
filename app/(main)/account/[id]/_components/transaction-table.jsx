@@ -78,7 +78,7 @@ const RECURRING_INTERVALS = {
   YEARLY: "Yearly",
 };
 
-export function TransactionTable({ transactions }) {
+export function TransactionTable({ transactions, accountName }) {
   const [selectedIds, setSelectedIds] = useState([]);
   const [sortConfig, setSortConfig] = useState({
     field: "date",
@@ -270,7 +270,7 @@ export function TransactionTable({ transactions }) {
 
       // Generate report based on selected format
       if (reportFormat === "pdf") {
-        await generateMonthlyPDFReport(monthTransactions, monthNames[monthNumber - 1], year);
+        await generateMonthlyPDFReport(monthTransactions, monthNames[monthNumber - 1], year, accountName);
       } else {
         await generateMonthlyReport(monthTransactions, monthNames[monthNumber - 1], year);
       }
@@ -292,8 +292,8 @@ export function TransactionTable({ transactions }) {
         <BarLoader className="mt-4" width={"100%"} color="#9333ea" />
       )}
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-4">
-        <div className="relative max-w-xs">
+      <div className="flex flex-wrap items-center gap-2">
+        <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search transactions..."
@@ -309,7 +309,7 @@ export function TransactionTable({ transactions }) {
         {/* Download Report Button */}
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button variant="outline" className="gap-2">
+            <Button variant="outline" className="gap-2 whitespace-nowrap">
               <Download className="h-4 w-4" />
               Download Report
             </Button>
@@ -382,64 +382,61 @@ export function TransactionTable({ transactions }) {
           </DialogContent>
         </Dialog>
 
-        <div className="flex gap-2 flex-1 justify-end">
-          <Select
-            value={typeFilter}
-            onValueChange={(value) => {
-              setTypeFilter(value);
-              setCurrentPage(1);
-            }}
+        <Select
+          value={typeFilter}
+          onValueChange={(value) => {
+            setTypeFilter(value);
+            setCurrentPage(1);
+          }}
+        >
+          <SelectTrigger className="w-auto min-w-[130px]">
+            <SelectValue placeholder="All Types" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="INCOME">Income</SelectItem>
+            <SelectItem value="EXPENSE">Expense</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <Select
+          value={recurringFilter}
+          onValueChange={(value) => {
+            setRecurringFilter(value);
+            setCurrentPage(1);
+          }}
+        >
+          <SelectTrigger className="w-auto min-w-[130px]">
+            <SelectValue placeholder="All Transactions" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="recurring">Recurring Only</SelectItem>
+            <SelectItem value="non-recurring">Non-recurring Only</SelectItem>
+          </SelectContent>
+        </Select>
+
+        {/* Bulk Actions */}
+        {selectedIds.length > 0 && (
+          <Button
+            variant="destructive"
+            size="sm"
+            onClick={handleBulkDelete}
+            className="whitespace-nowrap"
           >
-            <SelectTrigger className="w-[130px]">
-              <SelectValue placeholder="All Types" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="INCOME">Income</SelectItem>
-              <SelectItem value="EXPENSE">Expense</SelectItem>
-            </SelectContent>
-          </Select>
+            <Trash className="h-4 w-4 mr-2" />
+            Delete Selected ({selectedIds.length})
+          </Button>
+        )}
 
-          <Select
-            value={recurringFilter}
-            onValueChange={(value) => {
-              setRecurringFilter(value);
-              setCurrentPage(1);
-            }}
+        {(searchTerm || typeFilter || recurringFilter) && (
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={handleClearFilters}
+            title="Clear filters"
           >
-            <SelectTrigger className="w-[130px]">
-              <SelectValue placeholder="All Transactions" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="recurring">Recurring Only</SelectItem>
-              <SelectItem value="non-recurring">Non-recurring Only</SelectItem>
-            </SelectContent>
-          </Select>
-
-          {/* Bulk Actions */}
-          {selectedIds.length > 0 && (
-            <div className="flex items-center gap-2">
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={handleBulkDelete}
-              >
-                <Trash className="h-4 w-4 mr-2" />
-                Delete Selected ({selectedIds.length})
-              </Button>
-            </div>
-          )}
-
-          {(searchTerm || typeFilter || recurringFilter) && (
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={handleClearFilters}
-              title="Clear filters"
-            >
-              <X className="h-4 w-5" />
-            </Button>
-          )}
-        </div>
+            <X className="h-4 w-5" />
+          </Button>
+        )}
       </div>
 
       {/* Transactions Table */}

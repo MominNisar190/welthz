@@ -82,7 +82,7 @@ export function AccountChart({ transactions }) {
           Transaction Overview
         </CardTitle>
         <Select defaultValue={dateRange} onValueChange={setDateRange}>
-          <SelectTrigger className="w-[140px]">
+          <SelectTrigger className="w-auto min-w-[140px]">
             <SelectValue placeholder="Select range" />
           </SelectTrigger>
           <SelectContent>

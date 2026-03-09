@@ -49,7 +49,7 @@ export default async function AccountPage({ params }) {
       <Suspense
         fallback={<BarLoader className="mt-4" width={"100%"} color="#9333ea" />}
       >
-        <TransactionTable transactions={transactions} />
+        <TransactionTable transactions={transactions} accountName={account.name} />
       </Suspense>
     </div>
   );

@@ -124,6 +124,22 @@ export async function createAccount(data) {
       },
     });
 
+    // Create initial balance transaction if balance > 0
+    if (balanceFloat > 0) {
+      await db.transaction.create({
+        data: {
+          type: "INCOME",
+          amount: balanceFloat,
+          description: "Initial Account Balance",
+          date: new Date(),
+          category: "Other",
+          userId: user.id,
+          accountId: account.id,
+          isRecurring: false,
+        },
+      });
+    }
+
     // Serialize the account before returning
     const serializedAccount = serializeTransaction(account);
 

@@ -132,7 +132,7 @@ export function DashboardOverview({ accounts, transactions }) {
             value={selectedAccountId}
             onValueChange={setSelectedAccountId}
           >
-            <SelectTrigger className="w-[140px]">
+            <SelectTrigger className="w-auto min-w-[140px]">
               <SelectValue placeholder="Select account">
                 {truncatedAccountName}
               </SelectValue>
@@ -200,7 +200,7 @@ export function DashboardOverview({ accounts, transactions }) {
           </CardTitle>
           {monthOptions.length > 0 && (
             <Select value={selectedMonth} onValueChange={setSelectedMonth}>
-              <SelectTrigger className="w-[160px]">
+              <SelectTrigger className="w-auto min-w-[160px]">
                 <SelectValue placeholder="Select month" />
               </SelectTrigger>
               <SelectContent>

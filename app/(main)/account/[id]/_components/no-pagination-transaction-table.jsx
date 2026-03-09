@@ -193,7 +193,7 @@ export function NoPaginationTransactionTable({ transactions }) {
         </div>
         <div className="flex gap-2">
           <Select value={typeFilter} onValueChange={setTypeFilter}>
-            <SelectTrigger>
+            <SelectTrigger className="w-auto min-w-[130px]">
               <SelectValue placeholder="All Types" />
             </SelectTrigger>
             <SelectContent>
@@ -208,7 +208,7 @@ export function NoPaginationTransactionTable({ transactions }) {
               setRecurringFilter(value);
             }}
           >
-            <SelectTrigger className="w-[130px]">
+            <SelectTrigger className="w-auto min-w-[130px]">
               <SelectValue placeholder="All Transactions" />
             </SelectTrigger>
             <SelectContent>
