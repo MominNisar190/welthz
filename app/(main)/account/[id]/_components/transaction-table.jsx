@@ -440,7 +440,7 @@ export function TransactionTable({ transactions, accountName }) {
       </div>
 
       {/* Transactions Table */}
-      <div className="rounded-md border">
+      <div className="rounded-md border overflow-auto">
         <Table>
           <TableHeader>
             <TableRow>
@@ -454,7 +454,7 @@ export function TransactionTable({ transactions, accountName }) {
                 />
               </TableHead>
               <TableHead
-                className="cursor-pointer"
+                className="cursor-pointer whitespace-nowrap"
                 onClick={() => handleSort("date")}
               >
                 <div className="flex items-center">
@@ -467,9 +467,9 @@ export function TransactionTable({ transactions, accountName }) {
                     ))}
                 </div>
               </TableHead>
-              <TableHead>Description</TableHead>
+              <TableHead className="min-w-[150px]">Description</TableHead>
               <TableHead
-                className="cursor-pointer"
+                className="cursor-pointer whitespace-nowrap"
                 onClick={() => handleSort("category")}
               >
                 <div className="flex items-center">
@@ -483,7 +483,7 @@ export function TransactionTable({ transactions, accountName }) {
                 </div>
               </TableHead>
               <TableHead
-                className="cursor-pointer text-right"
+                className="cursor-pointer text-right whitespace-nowrap"
                 onClick={() => handleSort("amount")}
               >
                 <div className="flex items-center justify-end">
@@ -496,7 +496,7 @@ export function TransactionTable({ transactions, accountName }) {
                     ))}
                 </div>
               </TableHead>
-              <TableHead>Recurring</TableHead>
+              <TableHead className="whitespace-nowrap">Recurring</TableHead>
               <TableHead className="w-[50px]" />
             </TableRow>
           </TableHeader>
