@@ -38,18 +38,14 @@ export default async function AccountPage({ params }) {
         </div>
       </div>
 
-      {/* Chart Section */}
+      {/* Chart and Table Section */}
       <Suspense
         fallback={<BarLoader className="mt-4" width={"100%"} color="#9333ea" />}
       >
-        <AccountChart transactions={transactions} />
-      </Suspense>
-
-      {/* Transactions Table */}
-      <Suspense
-        fallback={<BarLoader className="mt-4" width={"100%"} color="#9333ea" />}
-      >
-        <TransactionTable transactions={transactions} accountName={account.name} />
+        <div className="space-y-8">
+          <AccountChart transactions={transactions} />
+          <TransactionTable transactions={transactions} accountName={account.name} />
+        </div>
       </Suspense>
     </div>
   );
