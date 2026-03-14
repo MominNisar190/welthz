@@ -79,7 +79,7 @@ export function ReceiptScanner({ onScanComplete }) {
       if (result && result.amount && result.amount > 0) {
         onScanComplete(result);
         toast.success("Receipt scanned successfully!", {
-          description: `Amount: $${result.amount.toFixed(2)} from ${result.merchantName}`
+          description: `Amount: ₹${result.amount.toFixed(2)} from ${result.merchantName}`
         });
       } else {
         toast.error("Could not read receipt", {

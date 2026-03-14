@@ -180,7 +180,7 @@ export function DashboardOverview({ accounts, transactions }) {
                       ) : (
                         <ArrowUpRight className="mr-1 h-4 w-4" />
                       )}
-                      ${typeof transaction.amount === 'object' && transaction.amount.toNumber
+                      ₹{typeof transaction.amount === 'object' && transaction.amount.toNumber
                         ? transaction.amount.toNumber().toFixed(2)
                         : Number(transaction.amount).toFixed(2)}
                     </div>
@@ -243,7 +243,7 @@ export function DashboardOverview({ accounts, transactions }) {
                     ))}
                   </Pie>
                   <Tooltip
-                    formatter={(value) => `$${Number(value).toFixed(2)}`}
+                    formatter={(value) => `₹${Number(value).toFixed(2)}`}
                     contentStyle={{
                       backgroundColor: "hsl(var(--popover))",
                       border: "1px solid hsl(var(--border))",

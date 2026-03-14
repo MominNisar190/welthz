@@ -541,8 +541,8 @@ export function TransactionTable({ transactions, accountName }) {
                         : "text-green-500"
                     )}
                   >
-                    {transaction.type === "EXPENSE" ? "-" : "+"}$
-                    {transaction.amount.toFixed(2)}
+                    {transaction.type === "EXPENSE" ? "-" : "+"}
+                    {transaction.amount.toFixed(2)} ₹
                   </TableCell>
                   <TableCell>
                     {transaction.isRecurring ? (
