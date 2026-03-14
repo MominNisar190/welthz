@@ -36,6 +36,7 @@ import { toast } from "sonner";
 export function AccountCard({ account }) {
   const { name, type, balance, id, isDefault } = account;
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const {
     loading: updateDefaultLoading,
@@ -105,7 +106,7 @@ export function AccountCard({ account }) {
                 onClick={handleDefaultChange}
                 disabled={updateDefaultLoading}
               />
-              <DropdownMenu>
+              <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="ghost"
@@ -121,7 +122,8 @@ export function AccountCard({ account }) {
                     className="text-destructive focus:text-destructive"
                     onClick={(e) => {
                       e.preventDefault();
-                      setShowDeleteDialog(true);
+                      setDropdownOpen(false);
+                      setTimeout(() => setShowDeleteDialog(true), 100);
                     }}
                   >
                     <Trash2 className="mr-2 h-4 w-4" />
