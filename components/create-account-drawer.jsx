@@ -6,7 +6,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import useFetch from "@/hooks/use-fetch";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -31,7 +30,6 @@ import { accountSchema } from "@/app/lib/schema";
 
 export function CreateAccountDrawer({ children, open: externalOpen, setOpen: setExternalOpen }) {
   const [internalOpen, setInternalOpen] = useState(false);
-  const router = useRouter();
 
   const open = externalOpen !== undefined ? externalOpen : internalOpen;
   const setOpen = setExternalOpen !== undefined ? setExternalOpen : setInternalOpen;
@@ -68,7 +66,6 @@ export function CreateAccountDrawer({ children, open: externalOpen, setOpen: set
       toast.success("Account created successfully");
       reset();
       setOpen(false);
-      router.refresh();
     }
   }, [newAccount, reset]);
 
