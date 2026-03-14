@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarIcon, Loader2 } from "lucide-react";
@@ -74,6 +74,8 @@ export function AddTransactionForm({
             isRecurring: false,
           },
   });
+
+  const [createAccountOpen, setCreateAccountOpen] = useState(false);
 
   const {
     loading: transactionLoading,
@@ -183,14 +185,18 @@ export function AddTransactionForm({
                   {account.name} (₹{parseFloat(account.balance).toFixed(2)})
                 </SelectItem>
               ))}
-              <CreateAccountDrawer>
-                <Button
-                  variant="ghost"
-                  className="relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none hover:bg-accent hover:text-accent-foreground"
-                >
-                  Create Account
-                </Button>
-              </CreateAccountDrawer>
+              <Button
+                type="button"
+                variant="ghost"
+                className="relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none hover:bg-accent hover:text-accent-foreground"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setCreateAccountOpen(true);
+                }}
+              >
+                Create Account
+              </Button>
             </SelectContent>
           </Select>
           {errors.accountId && (
@@ -198,6 +204,8 @@ export function AddTransactionForm({
           )}
         </div>
       </div>
+
+      <CreateAccountDrawer open={createAccountOpen} setOpen={setCreateAccountOpen} />
 
       {/* Category */}
       <div className="space-y-2">

@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import useFetch from "@/hooks/use-fetch";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -28,8 +29,12 @@ import { Switch } from "@/components/ui/switch";
 import { createAccount } from "@/actions/dashboard";
 import { accountSchema } from "@/app/lib/schema";
 
-export function CreateAccountDrawer({ children }) {
-  const [open, setOpen] = useState(false);
+export function CreateAccountDrawer({ children, open: externalOpen, setOpen: setExternalOpen }) {
+  const [internalOpen, setInternalOpen] = useState(false);
+  const router = useRouter();
+
+  const open = externalOpen !== undefined ? externalOpen : internalOpen;
+  const setOpen = setExternalOpen !== undefined ? setExternalOpen : setInternalOpen;
   const {
     register,
     handleSubmit,
@@ -63,6 +68,7 @@ export function CreateAccountDrawer({ children }) {
       toast.success("Account created successfully");
       reset();
       setOpen(false);
+      router.refresh();
     }
   }, [newAccount, reset]);
 
@@ -74,7 +80,7 @@ export function CreateAccountDrawer({ children }) {
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger asChild>{children}</DrawerTrigger>
+      {children && <DrawerTrigger asChild>{children}</DrawerTrigger>}
       <DrawerContent>
         <DrawerHeader>
           <DrawerTitle>Create New Account</DrawerTitle>
